@@ -44,6 +44,7 @@ origin_by_name = (parent, name) ->
     return point(e.attr('x'), e.attr('y'))
 
 lib.util =
+    any_point : any_point
     point : point
     dimensions : dimensions
     origin_by_name : origin_by_name

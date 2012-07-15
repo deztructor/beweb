@@ -1,7 +1,7 @@
 %.js : %.coffee
 	coffee -c $<
 
-all : tests.js
+all : tests.js svg_tests.js
 
 
 

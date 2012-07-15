@@ -15,11 +15,23 @@
   <div id="qunit-fixture">
   </div>
   <script type="text/javascript" src="qunit/qunit.js"></script>
-
+  <script type="text/javascript">
+    QUnit.config.reorder = false;
+  </script>
   <script type="text/javascript">lib = {};</script>
   <script type="text/javascript" src="coffee-script.js"></script>
   <script type="text/javascript" src="../src/util.js"></script>
   <script type="text/javascript" src="../src/fsm.js"></script>
   <script type="text/javascript" src="tests.js"></script>
+
+  <script type="text/javascript" src="../jquery/jquery.js"></script>
+  <style type="text/css">@import "../jquery/jquery.svg.css";</style>
+  <script type="text/javascript" src="../jquery/jquery.svg.js"></script>
+  <script type="text/javascript" src="../jquery/jquery.svganim.js"></script>
+  <script type="text/javascript" src="../jquery/jquery.svgdom.js"></script>
+
+  <script type="text/javascript" src="../src/svg.js"></script>
+  <script type="text/javascript" src="svg.js"></script>
+  <div id="svgload" style="width:600px; height: 800px; z-index:10"/>
 </body>
 </html>

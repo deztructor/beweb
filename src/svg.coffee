@@ -1,3 +1,5 @@
+any_point = lib.util.any_point
+point = lib.util.point
 
 any_point.svg_translate = () -> "translate(#{@csv()})"
 any_point.svg_point = () -> @joined(' ')
@@ -22,7 +24,7 @@ lib.SVG = (root) ->
             target.play()
             setTimeout(target.stop, timeout * 1000)
             target
-            
+
         target.stop = () ->
             console.log("stop", target.name)
             if target.is_playing
@@ -53,27 +55,54 @@ lib.SVG = (root) ->
         S : -> point(@cx(), @y + @h)
         SW : -> point(@x, @y + @h)
         W : -> point(@x, @cy())
+        right : -> @x + @w
+        bottom : -> @y + @h
+        extend : (other) ->
+            @x = Math.min(@x, other.x)
+            @y = Math.min(@y, other.y)
+            r = Math.max(@right(), other.right())
+            b = Math.max(@bottom(), other.bottom())
+            @w = r - @x
+            @h = b - @y
+            @
         from_SVGRect : (r) ->
             @x = r.x
             @y = r.y
             @w = r.width
             @h = r.height
+            @
         from_DOMElement : (e) ->
             @w = e.clientWidth
             @h = e.clientHeight
             @x = e.offsetLeft
             @y = e.offsetTop
-
-    get_bbox = (element) ->
+            @
+        from_data : (x, y, w, h) ->
+            @x = x
+            @y = y
+            @w = w
+            @h = h
+            @
+    element_bbox = (e) ->
         result = Object.create(bbox)
-        if 'getBBox' of element
-            result.from_SVGRect(element.getBBox())
+        if 'getBBox' of e
+            result.from_SVGRect(e.getBBox())
         else
-            result.from_DOMElement(element)
-        result
+            result.from_DOMElement(e)
+
+    get_bbox = (e) ->
+        if e.hasOwnProperty('length')
+            boxes = (element_bbox(x) for x in e)
+            [xs, ys, rs, bs] = [(b.x for b in boxes), (b.y for b in boxes),
+            (b.r() for b in boxes), (b.b() for b in boxes)]
+            [x, y, r, b] = [Math.min(xs...), Math.min(ys...),
+            Math.max(rs...), Math.max(bs...)]
+            res = Object.create(bbox)
+            bbox.from_data(x, y, r - x, b - y)
+        else
+            element_bbox(element)
 
     center = (element) ->
-        element = if element.hasOwnProperty('length') then element[0] else element
         get_bbox(element).C()
 
     pole2center = (element, pole, spec) ->
@@ -204,7 +233,7 @@ lib.SVG = (root) ->
         E = (a) ->
             parts = parts.concat(a.join(' '))
             this
-            
+
         that.M = (x, y) -> E(['M', x, y])
         that.L = (x, y) -> E(['L', x, y])
         that.C = (x1, y1, x2, y2, x, y) -> E(['C', x1, y1, x2, y2, x, y])
@@ -258,4 +287,4 @@ lib.SVG = (root) ->
         res.all = mk_animation_group("all", nth(1, names_animations))
         return res;
 
-    svgns
+    return svgns
