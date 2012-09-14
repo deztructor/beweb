@@ -94,7 +94,7 @@ lib.SVG = (root) ->
         if e.hasOwnProperty('length')
             boxes = (element_bbox(x) for x in e)
             [xs, ys, rs, bs] = [(b.x for b in boxes), (b.y for b in boxes),
-            (b.r() for b in boxes), (b.b() for b in boxes)]
+            (b.right() for b in boxes), (b.bottom() for b in boxes)]
             [x, y, r, b] = [Math.min(xs...), Math.min(ys...),
             Math.max(rs...), Math.max(bs...)]
             res = Object.create(bbox)
@@ -113,7 +113,7 @@ lib.SVG = (root) ->
     animate = (svg_name, default_target, spec) ->
         that = mk_element(svg_name, default_target, spec.name)
         if !spec.duration
-            throw {err : "Missing or wrong duration"}
+            throw "Missing or wrong duration"
         attr =
             id : spec.name
             repeatCount : spec.count || 'indefinite'
@@ -129,6 +129,9 @@ lib.SVG = (root) ->
         (that.setAttribute(n, v) for n, v of attr)
         that.apply = () -> that.apply_to(that.default_target)
         that.apply_to = (e) ->
+            if e.hasOwnProperty('length')
+                e = e[0]
+
             if that.parentElement != e
                 e.appendChild(that)
             that
